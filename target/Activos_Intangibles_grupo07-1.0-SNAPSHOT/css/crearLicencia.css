@@ -81,6 +81,12 @@ body {
   box-shadow: 0 0 30px #fff;
 }
 
+.mensaje {
+    color: #0f0; /* verde para éxito */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 @keyframes glow {
   0% { box-shadow: 0 0 10px #ffffff, inset 0 0 5px #ffffff; }
   100% { box-shadow: 0 0 25px #ffffff, inset 0 0 15px #ffffff; }

@@ -13,3 +13,4 @@ controlador\UsuarioDAO.class
 modelo\Licencia.class
 modelo\Usuario.class
 modelo\Reporte.class
+servicio\crearLicenciaServlet.class

@@ -23,7 +23,13 @@
 
   <div class="form-container">
     <h2>Licencia de Software</h2>
-    <form action="LicenciaServlet" method="post">
+
+    <%-- Mostrar mensaje de éxito o error desde el Servlet --%>
+    <% if (request.getAttribute("mensaje") != null) { %>
+        <div class="mensaje"><%= request.getAttribute("mensaje") %></div>
+    <% } %>
+
+    <form action="crearLicenciaServlet" method="post">
       <label for="tipo">Tipo de Licencia:</label>
       <select id="tipo" name="tipo">
         <option>Microsoft Office</option>
@@ -48,11 +54,12 @@
 
       <div class="btn-container">
         <button type="submit">Guardar</button>
-        <button type="button" onclick="window.location='index.html'">Cancelar</button>
+        <button type="button" onclick="window.location.href='menuGestion.jsp'">Cancelar</button>
       </div>
     </form>
   </div>
 
+  <!-- Script Flatpickr para fechas -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
     flatpickr("#fechaCompra", { dateFormat: "Y-m-d", theme: "dark" });
