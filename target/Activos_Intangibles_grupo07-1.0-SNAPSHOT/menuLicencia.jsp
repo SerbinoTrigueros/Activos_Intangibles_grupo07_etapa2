@@ -19,7 +19,8 @@
     <h1>Gestión y Administración en Licencias de Software</h1>
 
     <div class="options">
-      <div class="option-card" onclick="window.location.href='gestionarLicencias.jsp'">
+      <!-- Aquí cambiamos a menuGestion.jsp -->
+      <div class="option-card" onclick="window.location.href='menuGestion.jsp'">
         <h2>Gestión de Licencias</h2>
       </div>
 
@@ -31,4 +32,3 @@
 
 </body>
 </html>
-

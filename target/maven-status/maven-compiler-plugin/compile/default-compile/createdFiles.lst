@@ -2,7 +2,6 @@ servicio\ConexionBD.class
 controlador\AmortizacionDAO.class
 controlador\LicenciaDAO.class
 modelo\Amortizacion.class
-servicio\ConexionServlet.class
 com\mycompany\activos_intangibles_grupo07\JakartaRestConfiguration.class
 com\mycompany\activos_intangibles_grupo07\resources\JakartaEE10Resource.class
 controlador\ReporteDAO.class
