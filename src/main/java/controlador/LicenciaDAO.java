@@ -22,7 +22,7 @@ public class LicenciaDAO {
 
     // Agregar una licencia
     public boolean agregarLicencia(Licencia l) throws SQLException {
-        String sql = "INSERT INTO licencia (tipolicencia, costo, fechacompra, fechafin, vidautil, valorenlibros, valorespendientes, idusuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO licencia (tipolicencia, costo, fechacompra, fechafin, vidautil, valorenlibros, valorpendientes, idusuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = conexion.prepareStatement(sql);
         ps.setString(1, l.getTipoLicencia());
         ps.setDouble(2, l.getCosto());
@@ -36,26 +36,29 @@ public class LicenciaDAO {
     }
 
     // Listar todas las licencias
-    public List<Licencia> listarLicencias() throws SQLException {
-        List<Licencia> lista = new ArrayList<>();
-        String sql = "SELECT * FROM licencia";
-        Statement st = conexion.createStatement();
-        ResultSet rs = st.executeQuery(sql);
-        while (rs.next()) {
-            lista.add(new Licencia(
-                rs.getInt("idlicencia"),
-                rs.getString("tipolicencia"),
-                rs.getDouble("costo"),
-                rs.getDate("fechacompra"),
-                rs.getDate("fechafin"),
-                rs.getInt("vidautil"),
-                rs.getInt("valorenlibros"),
-                rs.getDouble("valorespendientes"),
-                rs.getInt("idusuario") // Asignar el id del usuario
-            ));
-        }
-        return lista;
+  // Listar licencias de un usuario
+    public List<Licencia> listarLicenciasPorUsuario(int idUsuario) throws SQLException {
+    List<Licencia> lista = new ArrayList<>();
+    String sql = "SELECT * FROM licencia WHERE idusuario = ?";
+    PreparedStatement ps = conexion.prepareStatement(sql);
+    ps.setInt(1, idUsuario);
+    ResultSet rs = ps.executeQuery();
+    while (rs.next()) {
+        lista.add(new Licencia(
+            rs.getInt("idlicencia"),
+            rs.getString("tipolicencia"),
+            rs.getDouble("costo"),
+            rs.getDate("fechacompra"),
+            rs.getDate("fechafin"),
+            rs.getInt("vidautil"),
+            rs.getInt("valorenlibros"),
+            rs.getDouble("valorpendientes"),
+            rs.getInt("idusuario")
+        ));
     }
+    return lista;
+}
+
 
     // Buscar una licencia por id
     public Licencia buscarPorId(int id) throws SQLException {
@@ -72,7 +75,7 @@ public class LicenciaDAO {
                 rs.getDate("fechafin"),
                 rs.getInt("vidautil"),
                 rs.getInt("valorenlibros"),
-                rs.getDouble("valorespendientes"),
+                rs.getDouble("valorpendientes"),
                 rs.getInt("idusuario")
             );
         }

@@ -4,6 +4,7 @@ controlador\LicenciaDAO.class
 modelo\Amortizacion.class
 com\mycompany\activos_intangibles_grupo07\JakartaRestConfiguration.class
 com\mycompany\activos_intangibles_grupo07\resources\JakartaEE10Resource.class
+servicio\verLicenciaServlet.class
 controlador\ReporteDAO.class
 controlador\CuotaDAO.class
 modelo\Cuota.class

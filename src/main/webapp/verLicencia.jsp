@@ -3,58 +3,65 @@
     Created on : 13 nov 2025, 17:05:30
     Author     : serbi
 --%>
-
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="modelo.Licencia" %>
+
+<%
+    List<Licencia> lista = (List<Licencia>) request.getAttribute("listaLicencias");
+%>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Listado de Licencias</title>
-
-<!-- Enlace al CSS externo -->
+<meta charset="UTF-8">
+<title>Ver Licencias</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/verLicencia.css">
-
 </head>
 <body>
 
-  <h2 class="titulo">Listado de Licencias Registradas</h2>
+<h1>Listado de Licencias</h1>
 
-  <table>
+<% if (request.getAttribute("mensaje") != null) { %>
+    <div class="error"><%= request.getAttribute("mensaje") %></div>
+<% } %>
+
+<table>
     <thead>
-      <tr>
-        <th>ID</th>
-        <th>Tipo de Licencia</th>
-        <th>Costo</th>
-        <th>Fecha Compra</th>
-        <th>Fecha Fin</th>
-        <th>Vida Útil</th>
-      </tr>
+        <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Costo</th>
+            <th>Fecha Compra</th>
+            <th>Fecha Fin</th>
+            <th>Vida Útil</th>
+            <th>Valor en Libros</th>
+            <th>Valor Pendiente</th>
+            <th>ID Usuario</th>
+        </tr>
     </thead>
     <tbody>
-      <!-- Ejemplo de filas estáticas, luego puedes hacer que se generen dinámicamente con JSTL -->
-      <tr>
-        <td>1</td>
-        <td>Microsoft Office</td>
-        <td>$250</td>
-        <td>2024-01-15</td>
-        <td>2025-01-15</td>
-        <td>1 año</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>SQL Server</td>
-        <td>$180</td>
-        <td>2023-11-10</td>
-        <td>2024-11-10</td>
-        <td>1 año</td>
-      </tr>
+    <% if (lista != null) {
+        for (Licencia l : lista) { %>
+            <tr>
+                <td><%= l.getIdLicencia() %></td>
+                <td><%= l.getTipoLicencia() %></td>
+                <td><%= l.getCosto() %></td>
+                <td><%= l.getFechaCompra() %></td>
+                <td><%= l.getFechaFin() %></td>
+                <td><%= l.getVidaUtil() %></td>
+                <td><%= l.getValorEnLibros() %></td>
+                <td><%= l.getValorPendiente() %></td>
+                <td><%= l.getIdUsuario() %></td>
+            </tr>
+    <%  }
+       } %>
     </tbody>
-  </table>
+</table>
 
-  <div class="button-container">
-    <button onclick="window.location='index.jsp'">Atrás</button>
-  </div>
+<div class="button-container">
+    <button onclick="window.location.href='menuGestion.jsp'">Atrás</button>
+</div>
 
 </body>
 </html>
