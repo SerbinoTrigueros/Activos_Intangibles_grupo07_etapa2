@@ -1,0 +1,67 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 13 nov 2025, 17:06:22
+    Author     : serbi
+*/
+
+body {
+  background-color: #0a0a0a;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+h1 {
+  color: #ffff00;
+  text-shadow: 0 0 20px #ffff00;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+}
+
+.option-card {
+  background: #1a1a00;
+  border: 2px solid #ffff00;
+  box-shadow: 0 0 25px #ffff00;
+  border-radius: 15px;
+  width: 500px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.option-card h2 {
+  color: #ffff00;
+  font-size: 1.4em;
+  text-shadow: 0 0 10px #ffff00;
+}
+
+.option-card:hover {
+  background-color: #ffff00;
+  color: #1a1a00;
+  box-shadow: 0 0 40px #ffff00;
+  transform: scale(1.05);
+}
+
+.option-card:hover h2 {
+  color: #1a1a00;
+  text-shadow: none;
+}

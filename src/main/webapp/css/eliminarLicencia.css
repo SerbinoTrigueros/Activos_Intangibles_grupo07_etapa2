@@ -1,0 +1,75 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 13 nov 2025, 17:03:54
+    Author     : serbi
+*/
+
+body {
+  background-color: #000;
+  color: #ff00ff;
+  font-family: 'Poppins', sans-serif;
+  margin: 20px;
+}
+
+.titulo {
+  text-align: center;
+  text-shadow: 0 0 15px #ff00ff;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1a001a;
+  box-shadow: 0 0 20px #ff00ff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  border: 1px solid #ff00ff;
+  padding: 10px 15px;
+  text-align: left;
+}
+
+th {
+  background-color: #330033;
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
+}
+
+tr:nth-child(even) {
+  background-color: #260026;
+}
+
+tr:hover {
+  background-color: #550055;
+  cursor: pointer;
+}
+
+button {
+  background-color: #000;
+  border: 2px solid #ff00ff;
+  color: #ff00ff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px #ff00ff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background-color: #ff00ff;
+  color: #000;
+  box-shadow: 0 0 30px #ff00ff;
+}
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
