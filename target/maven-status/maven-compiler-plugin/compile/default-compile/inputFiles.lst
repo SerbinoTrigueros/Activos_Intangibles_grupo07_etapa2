@@ -1,4 +1,5 @@
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\servicio\ConexionBD.java
+C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\servicio\eliminarLicenciaServlet.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\controlador\ReporteDAO.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\servicio\verLicenciaServlet.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\modelo\Licencia.java
@@ -7,6 +8,7 @@ C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\j
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\modelo\Amortizacion.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\com\mycompany\activos_intangibles_grupo07\JakartaRestConfiguration.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\modelo\Reporte.java
+C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\servicio\ListarLicenciasServlet.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\controlador\CuotaDAO.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\com\mycompany\activos_intangibles_grupo07\resources\JakartaEE10Resource.java
 C:\Users\serbi\Documents\NetBeansProjects\Activos_Intangibles_grupo07\src\main\java\controlador\LicenciaDAO.java

@@ -8,14 +8,22 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Licencia;
+import servicio.ConexionBD;
 /**
  *
  * @author serbi
  */
+
 public class LicenciaDAO {
     
-        private Connection conexion;
+    private Connection conexion;
 
+    // ✔ Constructor vacío que sí conecta
+    public LicenciaDAO() {
+        this.conexion = ConexionBD.conectar();
+    }
+
+    // Constructor con conexión manual
     public LicenciaDAO(Connection conexion) {
         this.conexion = conexion;
     }
@@ -31,36 +39,34 @@ public class LicenciaDAO {
         ps.setInt(5, l.getVidaUtil());
         ps.setInt(6, l.getValorEnLibros());
         ps.setDouble(7, l.getValorPendiente());
-        ps.setInt(8, l.getIdUsuario()); // Relación con el usuario
+        ps.setInt(8, l.getIdUsuario());
         return ps.executeUpdate() > 0;
     }
 
-    // Listar todas las licencias
-  // Listar licencias de un usuario
+    // Listar licencias por usuario
     public List<Licencia> listarLicenciasPorUsuario(int idUsuario) throws SQLException {
-    List<Licencia> lista = new ArrayList<>();
-    String sql = "SELECT * FROM licencia WHERE idusuario = ?";
-    PreparedStatement ps = conexion.prepareStatement(sql);
-    ps.setInt(1, idUsuario);
-    ResultSet rs = ps.executeQuery();
-    while (rs.next()) {
-        lista.add(new Licencia(
-            rs.getInt("idlicencia"),
-            rs.getString("tipolicencia"),
-            rs.getDouble("costo"),
-            rs.getDate("fechacompra"),
-            rs.getDate("fechafin"),
-            rs.getInt("vidautil"),
-            rs.getInt("valorenlibros"),
-            rs.getDouble("valorpendientes"),
-            rs.getInt("idusuario")
-        ));
+        List<Licencia> lista = new ArrayList<>();
+        String sql = "SELECT * FROM licencia WHERE idusuario = ?";
+        PreparedStatement ps = conexion.prepareStatement(sql);
+        ps.setInt(1, idUsuario);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            lista.add(new Licencia(
+                rs.getInt("idlicencia"),
+                rs.getString("tipolicencia"),
+                rs.getDouble("costo"),
+                rs.getDate("fechacompra"),
+                rs.getDate("fechafin"),
+                rs.getInt("vidautil"),
+                rs.getInt("valorenlibros"),
+                rs.getDouble("valorpendientes"),
+                rs.getInt("idusuario")
+            ));
+        }
+        return lista;
     }
-    return lista;
-}
 
-
-    // Buscar una licencia por id
+    // Buscar por ID
     public Licencia buscarPorId(int id) throws SQLException {
         String sql = "SELECT * FROM licencia WHERE idlicencia=?";
         PreparedStatement ps = conexion.prepareStatement(sql);
@@ -82,4 +88,14 @@ public class LicenciaDAO {
         return null;
     }
 
+    // Eliminar licencia
+    public boolean eliminarLicencia(int id) throws SQLException {
+        String sql = "DELETE FROM licencia WHERE idlicencia=?";
+        PreparedStatement ps = conexion.prepareStatement(sql);
+        ps.setInt(1, id);
+        return ps.executeUpdate() > 0;
+    }
+
 }
+
+

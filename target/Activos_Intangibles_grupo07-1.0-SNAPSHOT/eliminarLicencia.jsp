@@ -1,73 +1,50 @@
-<%-- 
-    Document   : eliminarLicencia
-    Created on : 13 nov 2025, 17:04:08
-    Author     : serbi
---%>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Eliminar Licencia</title>
-
-<!-- Enlace al CSS externo -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/eliminarLicencia.css">
-
+    <title>Eliminar Licencias</title>
+      <link rel="stylesheet" href="${pageContext.request.contextPath}/css/eliminarLicencia.css">
 </head>
 <body>
 
-  <h2 class="titulo">Lista de Licencias Registradas</h2>
+<h2>Gestión - Eliminar Licencias</h2>
 
-  <table>
-    <thead>
-      <tr>
+<c:if test="${mensaje != null}">
+    <p style="color:red;">${mensaje}</p>
+</c:if>
+
+<table border="1" cellpadding="6">
+    <tr>
         <th>ID</th>
-        <th>Tipo de Licencia</th>
+        <th>Tipo Licencia</th>
         <th>Costo</th>
         <th>Fecha Compra</th>
         <th>Fecha Fin</th>
         <th>Vida Útil</th>
         <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Aquí puedes reemplazar los datos estáticos por un bucle JSTL -->
-      <tr>
-        <td>1</td>
-        <td>Microsoft Office</td>
-        <td>$250</td>
-        <td>2024-01-15</td>
-        <td>2025-01-15</td>
-        <td>1 año</td>
-        <td>
-          <form action="EliminarLicenciaServlet" method="post">
-            <input type="hidden" name="idlicencia" value="1">
-            <button type="submit">Eliminar</button>
-          </form>
-        </td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>SQL Server</td>
-        <td>$180</td>
-        <td>2023-11-10</td>
-        <td>2024-11-10</td>
-        <td>1 año</td>
-        <td>
-          <form action="EliminarLicenciaServlet" method="post">
-            <input type="hidden" name="idlicencia" value="2">
-            <button type="submit">Eliminar</button>
-          </form>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    </tr>
 
-  <div class="button-container">
-    <button onclick="window.location='index.jsp'">Cancelar</button>
-  </div>
+    <c:forEach var="lic" items="${listaLicencias}">
+        <tr>
+            <td>${lic.idLicencia}</td>
+            <td>${lic.tipoLicencia}</td>
+            <td>${lic.costo}</td>
+            <td>${lic.fechaCompra}</td>
+            <td>${lic.fechaFin}</td>
+            <td>${lic.vidaUtil}</td>
+            <td>
+                <!-- Enviamos el parámetro EXACTO que el servlet espera: idlicencia -->
+                <a href="eliminarLicenciaServlet?idlicencia=${lic.idLicencia}"
+                   onclick="return confirm('¿Seguro que quieres eliminar esta licencia?');">
+                    Eliminar
+                </a>
+            </td>
+        </tr>
+    </c:forEach>
+
+</table>
 
 </body>
 </html>

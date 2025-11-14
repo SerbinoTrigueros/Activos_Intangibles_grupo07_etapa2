@@ -30,10 +30,10 @@
         <h2>Crear Licencia</h2>
       </div>
 
-      <div class="option-card" onclick="window.location.href='eliminarLicencia.jsp'">
-        <h2>Eliminar Licencia</h2>
-      </div>
-    </div>
+      <div class="option-card" onclick="window.location.href='ListarLicenciasServlet'">
+    <h2>Eliminar Licencia</h2>
+</div>
+
 
     <div class="button-container">
       <button onclick="window.location.href='menuPrincipal.jsp'">Atrás</button>

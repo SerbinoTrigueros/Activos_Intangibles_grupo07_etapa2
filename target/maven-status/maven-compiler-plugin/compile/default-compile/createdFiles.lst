@@ -1,5 +1,6 @@
 servicio\ConexionBD.class
 controlador\AmortizacionDAO.class
+servicio\ListarLicenciasServlet.class
 controlador\LicenciaDAO.class
 modelo\Amortizacion.class
 com\mycompany\activos_intangibles_grupo07\JakartaRestConfiguration.class
@@ -8,6 +9,7 @@ servicio\verLicenciaServlet.class
 controlador\ReporteDAO.class
 controlador\CuotaDAO.class
 modelo\Cuota.class
+servicio\eliminarLicenciaServlet.class
 servicio\LoginServlet.class
 controlador\UsuarioDAO.class
 modelo\Licencia.class
