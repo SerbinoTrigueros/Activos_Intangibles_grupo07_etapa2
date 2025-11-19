@@ -12,7 +12,7 @@ import java.sql.Date;
  */
 public class Amortizacion {
     
-     private int idAmortizacion;
+    private int idAmortizacion;
     private String tipoCartera;
     private double monto;
     private Date fechaRegistro;
