@@ -25,7 +25,7 @@ public class ContabilidadDAO {
     public List<Licencia> listarLicencias() {
         List<Licencia> lista = new ArrayList<>();
 
-        String sql = "SELECT idlicencia, tipolicencia, costo, fechacompra, fechafin, vidautil FROM licencia ORDER BY idlicencia ASC";
+        String sql = "SELECT idlicencia, tipolicencia, costo, fechacompra, fechafin, vidautil, idusuario FROM licencia ORDER BY idlicencia ASC";
 
         try (Connection con = conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
 
@@ -37,6 +37,8 @@ public class ContabilidadDAO {
                 l.setFechaCompra(rs.getDate("fechacompra"));
                 l.setFechaFin(rs.getDate("fechafin"));
                 l.setVidaUtil(rs.getInt("vidautil"));
+                l.setIdUsuario(rs.getInt("idusuario"));
+
                 lista.add(l);
             }
 
