@@ -34,7 +34,8 @@
             
             <div class="button-group">
                 <%-- Botón que redirige al Servlet de Amortizaciones --%>
-                <a href="<c:url value="/AmortizacionServlet"/>">Mostrar Amortizaciones</a>
+                <a href="<c:url value='/AmortizacionServlet'/>">Mostrar Amortizaciones</a>
+
                 
                 <%-- Botón para recargar (Refrescar) la lista de licencias --%>
                 <a href="<c:url value="/ContabilidadServlet"/>">Refrescar Licencias</a>

@@ -24,15 +24,21 @@ public class ListarLicenciasServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        try {
-            LicenciaDAO dao = new LicenciaDAO();
-           List<Licencia> lista = dao.listarLicenciasPorUsuario(1);
+        ConexionBD conexion = new ConexionBD();
+        Connection conn = null;
 
+        try {
+            conn = conexion.conectar();
+            LicenciaDAO dao = new LicenciaDAO(conn);
+
+            List<Licencia> lista = dao.listarLicenciasPorUsuario(1);
             request.setAttribute("listaLicencias", lista);
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("mensaje", "Error al cargar las licencias: " + e.getMessage());
+        } finally {
+            conexion.desconectar(conn);
         }
 
         request.getRequestDispatcher("eliminarLicencia.jsp").forward(request, response);
@@ -44,4 +50,3 @@ public class ListarLicenciasServlet extends HttpServlet {
         doGet(request, response);
     }
 }
-

@@ -4,98 +4,136 @@
  */
 package controlador;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Licencia;
 import servicio.ConexionBD;
+
 /**
  *
  * @author serbi
  */
-
 public class LicenciaDAO {
+
     
-    private Connection conexion;
+    private Connection conn;
 
-    // ✔ Constructor vacío que sí conecta
-    public LicenciaDAO() {
-        this.conexion = ConexionBD.conectar();
+    public LicenciaDAO(Connection conn) {
+        this.conn = conn;
     }
 
-    // Constructor con conexión manual
-    public LicenciaDAO(Connection conexion) {
-        this.conexion = conexion;
-    }
+    public ArrayList<Licencia> listar() throws Exception {
+        ArrayList<Licencia> lista = new ArrayList<>();
+        String sql = "SELECT * FROM licencia";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-    // Agregar una licencia
-    public boolean agregarLicencia(Licencia l) throws SQLException {
-        String sql = "INSERT INTO licencia (tipolicencia, costo, fechacompra, fechafin, vidautil, valorenlibros, valorpendientes, idusuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps = conexion.prepareStatement(sql);
-        ps.setString(1, l.getTipoLicencia());
-        ps.setDouble(2, l.getCosto());
-        ps.setDate(3, new java.sql.Date(l.getFechaCompra().getTime()));
-        ps.setDate(4, new java.sql.Date(l.getFechaFin().getTime()));
-        ps.setInt(5, l.getVidaUtil());
-        ps.setInt(6, l.getValorEnLibros());
-        ps.setDouble(7, l.getValorPendiente());
-        ps.setInt(8, l.getIdUsuario());
-        return ps.executeUpdate() > 0;
-    }
-
-    // Listar licencias por usuario
-    public List<Licencia> listarLicenciasPorUsuario(int idUsuario) throws SQLException {
-        List<Licencia> lista = new ArrayList<>();
-        String sql = "SELECT * FROM licencia WHERE idusuario = ?";
-        PreparedStatement ps = conexion.prepareStatement(sql);
-        ps.setInt(1, idUsuario);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            lista.add(new Licencia(
-                rs.getInt("idlicencia"),
-                rs.getString("tipolicencia"),
-                rs.getDouble("costo"),
-                rs.getDate("fechacompra"),
-                rs.getDate("fechafin"),
-                rs.getInt("vidautil"),
-                rs.getInt("valorenlibros"),
-                rs.getDouble("valorpendientes"),
-                rs.getInt("idusuario")
-            ));
+            while (rs.next()) {
+                Licencia l = new Licencia();
+                l.setIdLicencia(rs.getInt("idlicencia"));
+                l.setTipoLicencia(rs.getString("tipolicencia"));
+                l.setCosto(rs.getDouble("costo"));
+                l.setFechaCompra(rs.getDate("fechacompra"));
+                l.setFechaFin(rs.getDate("fechafin"));
+                l.setVidaUtil(rs.getInt("vidautil"));
+                l.setValorEnLibros((int) rs.getDouble("valorenlibros"));
+                l.setValorPendiente(rs.getDouble("valorpendientes"));
+                l.setIdUsuario(rs.getInt("idusuario"));
+                lista.add(l);
+            }
         }
         return lista;
     }
 
-    // Buscar por ID
-    public Licencia buscarPorId(int id) throws SQLException {
+    public Licencia buscar(int id) throws Exception {
+        Licencia l = null;
         String sql = "SELECT * FROM licencia WHERE idlicencia=?";
-        PreparedStatement ps = conexion.prepareStatement(sql);
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return new Licencia(
-                rs.getInt("idlicencia"),
-                rs.getString("tipolicencia"),
-                rs.getDouble("costo"),
-                rs.getDate("fechacompra"),
-                rs.getDate("fechafin"),
-                rs.getInt("vidautil"),
-                rs.getInt("valorenlibros"),
-                rs.getDouble("valorpendientes"),
-                rs.getInt("idusuario")
-            );
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    l = new Licencia();
+                    l.setIdLicencia(rs.getInt("idlicencia"));
+                    l.setTipoLicencia(rs.getString("tipolicencia"));
+                    l.setCosto(rs.getDouble("costo"));
+                    l.setFechaCompra(rs.getDate("fechacompra"));
+                    l.setFechaFin(rs.getDate("fechafin"));
+                    l.setVidaUtil(rs.getInt("vidautil"));
+                    l.setValorEnLibros((int) rs.getDouble("valorenlibros"));
+                    l.setValorPendiente(rs.getDouble("valorpendientes"));
+                    l.setIdUsuario(rs.getInt("idusuario"));
+                }
+            }
         }
-        return null;
+        return l;
     }
 
-    // Eliminar licencia
-    public boolean eliminarLicencia(int id) throws SQLException {
+    public boolean insertar(Licencia l) throws Exception {
+        String sql = "INSERT INTO licencia(tipolicencia, costo, fechacompra, fechafin, vidautil, valorenlibros, valorpendientes, idusuario) VALUES(?,?,?,?,?,?,?,?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, l.getTipoLicencia());
+            ps.setDouble(2, l.getCosto());
+            ps.setDate(3, l.getFechaCompra());
+            ps.setDate(4, l.getFechaFin());
+            ps.setInt(5, l.getVidaUtil());
+            ps.setDouble(6, l.getValorEnLibros());
+            ps.setDouble(7, l.getValorPendiente());
+            ps.setInt(8, l.getIdUsuario());
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    public boolean actualizar(Licencia l) throws Exception {
+        String sql = "UPDATE licencia SET tipolicencia=?, costo=?, fechacompra=?, fechafin=?, vidautil=?, valorenlibros=?, valorpendientes=?, idusuario=? WHERE idlicencia=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, l.getTipoLicencia());
+            ps.setDouble(2, l.getCosto());
+            ps.setDate(3, l.getFechaCompra());
+            ps.setDate(4, l.getFechaFin());
+            ps.setInt(5, l.getVidaUtil());
+            ps.setDouble(6, l.getValorEnLibros());
+            ps.setDouble(7, l.getValorPendiente());
+            ps.setInt(8, l.getIdUsuario());
+            ps.setInt(9, l.getIdLicencia());
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    public boolean eliminar(int id) throws Exception {
         String sql = "DELETE FROM licencia WHERE idlicencia=?";
-        PreparedStatement ps = conexion.prepareStatement(sql);
-        ps.setInt(1, id);
-        return ps.executeUpdate() > 0;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        }
     }
 
+    public ArrayList<Licencia> listarLicenciasPorUsuario(int idUsuario) throws Exception {
+        ArrayList<Licencia> lista = new ArrayList<>();
+        String sql = "SELECT * FROM licencia WHERE idusuario=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Licencia l = new Licencia();
+                    l.setIdLicencia(rs.getInt("idlicencia"));
+                    l.setTipoLicencia(rs.getString("tipolicencia"));
+                    l.setCosto(rs.getDouble("costo"));
+                    l.setFechaCompra(rs.getDate("fechacompra"));
+                    l.setFechaFin(rs.getDate("fechafin"));
+                    l.setVidaUtil(rs.getInt("vidautil"));
+                    l.setValorEnLibros((int) rs.getDouble("valorenlibros"));
+                    l.setValorPendiente(rs.getDouble("valorpendientes"));
+                    l.setIdUsuario(rs.getInt("idusuario"));
+                    lista.add(l);
+                }
+            }
+        }
+        return lista;
+    }
 }
-
-

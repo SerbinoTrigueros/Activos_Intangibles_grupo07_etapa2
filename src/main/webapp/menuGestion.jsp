@@ -36,7 +36,7 @@
 
 
     <div class="button-container">
-      <button onclick="window.location.href='menuPrincipal.jsp'">Atrás</button>
+      <button onclick="window.location.href='menuLicencia.jsp'">Atrás</button>
     </div>
   </div>
 

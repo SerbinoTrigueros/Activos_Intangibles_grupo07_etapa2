@@ -6,7 +6,6 @@ package servicio;
 
 import controlador.LicenciaDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,19 +27,12 @@ import modelo.Usuario;
 @WebServlet(name = "verLicenciaServlet", urlPatterns = {"/verLicenciaServlet"})
 public class verLicenciaServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
-         
+            throws ServletException, IOException {
+
+        ConexionBD conexionBD = new ConexionBD(); // <-- Crear objeto de conexión
         Connection conn = null;
+
         try {
             // Obtener el usuario desde la sesión
             HttpSession session = request.getSession(false);
@@ -53,7 +45,7 @@ public class verLicenciaServlet extends HttpServlet {
             int idUsuario = usuario.getIdUsuario(); // ID del usuario logueado
 
             // Conectar a la base de datos y obtener licencias del usuario
-            conn = ConexionBD.conectar();
+            conn = conexionBD.conectar();
             LicenciaDAO dao = new LicenciaDAO(conn);
             List<Licencia> lista = dao.listarLicenciasPorUsuario(idUsuario);
 
@@ -64,29 +56,25 @@ public class verLicenciaServlet extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("mensaje", "Error al consultar la base de datos: " + e.getMessage());
             request.getRequestDispatcher("verLicencia.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("mensaje", "Error inesperado: " + e.getMessage());
+            request.getRequestDispatcher("verLicencia.jsp").forward(request, response);
         } finally {
-            ConexionBD.desconectar(conn);
+            conexionBD.desconectar(conn); // <-- Usar el objeto para desconectar
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(verLicenciaServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(verLicenciaServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     @Override

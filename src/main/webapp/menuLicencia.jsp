@@ -7,28 +7,29 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión y Administración en Licencias de Software</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/menuLicencia.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestión y Administración en Licencias de Software</title>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/menuLicencia.css">
+    </head>
+    <body>
 
-  <div class="container">
-    <h1>Gestión y Administración en Licencias de Software</h1>
+        <div class="container">
+            <h1>Gestión y Administración en Licencias de Software</h1>
 
-    <div class="options">
-      <!-- Aquí cambiamos a menuGestion.jsp -->
-      <div class="option-card" onclick="window.location.href='menuGestion.jsp'">
-        <h2>Gestión de Licencias</h2>
-      </div>
+            <div class="options">
+                <!-- Aquí cambiamos a menuGestion.jsp -->
+                <div class="option-card" onclick="window.location.href = 'menuGestion.jsp'">
+                    <h2>Gestión de Licencias</h2>
+                </div>
 
-      <div class="option-card" onclick="window.location.href='adminInfoContable.jsp'">
-        <h2>Administración de Información Contable</h2>
-      </div>
-    </div>
-  </div>
+                <div class="option-card" onclick="window.location.href = 'administrar.jsp'">
+                    <h2>Administración de Información Contable</h2>
+                </div>
 
-</body>
+            </div>
+        </div>
+
+    </body>
 </html>

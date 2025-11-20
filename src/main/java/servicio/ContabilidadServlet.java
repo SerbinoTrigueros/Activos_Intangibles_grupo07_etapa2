@@ -4,9 +4,9 @@
  */
 package servicio;
 
+
 import controlador.ContabilidadDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,33 +18,28 @@ import modelo.Licencia;
 /**
  *
  * @author serbi
- */
+ * */
 
 @WebServlet("/ContabilidadServlet")
 public class ContabilidadServlet extends HttpServlet {
-    
+
     private final ContabilidadDAO dao = new ContabilidadDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Cargar y mostrar la lista de licencias (simulando cargarLicencias())
+
         List<Licencia> listaLicencias = dao.listarLicencias();
-        
-        // Poner la lista en el request para que el JSP la muestre
+
         request.setAttribute("listaLicencias", listaLicencias);
-        
-        // Redireccionar al JSP principal
+
         request.getRequestDispatcher("administrar.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Lógica de POST (ej. para actualizar valores o consultar, si se implementa más tarde)
-        // Por ahora, solo refrescamos la vista
-        doGet(request, response); 
+
+        doGet(request, response);
     }
 }

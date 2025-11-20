@@ -6,194 +6,137 @@ package controlador;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import modelo.Amortizacion;
 import servicio.ConexionBD;
+
 /**
  *
  * @author serbi
  */
 public class AmortizacionDAO {
-     // Verifica si ya existen amortizaciones para una licencia
-    public boolean amortizacionesExisten(int idLicencia) {
-        String sql = "SELECT 1 FROM amortizacion WHERE idlicencia = ?";
-        Connection conn = ConexionBD.conectar();
-        if (conn == null) return false;
-        
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idLicencia);
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            System.err.println("Error en amortizacionesExisten: " + e.getMessage());
-            return false;
-        } finally {
-            ConexionBD.desconectar(conn);
-        }
-    }
 
-    // Calcula y guarda amortizaciones (mensuales y anuales)
-    public String generarAmortizaciones(int idLicencia) { // Retorna String para mensajes
-        if (amortizacionesExisten(idLicencia)) {
-            return "Las amortizaciones para esta licencia ya existen.";
-        }
+    private final ConexionBD conexion = new ConexionBD();
 
-        String sqlLicencia = "SELECT costo, vidautil, fechacompra FROM licencia WHERE idlicencia = ?";
-        String sqlInsert = "INSERT INTO amortizacion (idlicencia, tipocartera, monto, fecharegistro, estado) VALUES (?, ?, ?, ?, ?)";
+    public String generarAmortizaciones(int idLicencia) {
 
-        Connection conn = ConexionBD.conectar();
-        if (conn == null) return "Error de conexión a la BD.";
-        
-        try (PreparedStatement psLic = conn.prepareStatement(sqlLicencia);
-             PreparedStatement psIns = conn.prepareStatement(sqlInsert)) {
+        String sqlVerificar = "SELECT COUNT(*) FROM amortizacion WHERE idlicencia = ?";
+        String sqlInsert = "INSERT INTO amortizacion (idlicencia, tipocartera, monto, fecharegistro, estado) VALUES (?, 'mensual', 50.00, CURRENT_DATE, 'pendiente')";
 
-            psLic.setInt(1, idLicencia);
-            ResultSet rs = psLic.executeQuery();
+        try (Connection con = conexion.conectar(); PreparedStatement psVer = con.prepareStatement(sqlVerificar)) {
 
-            if (rs.next()) {
-                double costo = rs.getDouble("costo");
-                int vidaUtil = rs.getInt("vidautil");
-                java.sql.Date fechaCompra = rs.getDate("fechacompra");
+            psVer.setInt(1, idLicencia);
+            ResultSet rs = psVer.executeQuery();
+            rs.next();
 
-                if (vidaUtil <= 0) vidaUtil = 1;
-
-                double amortMensual = costo / (vidaUtil * 12);
-                double amortAnual = costo / vidaUtil;
-
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(fechaCompra);
-
-                // Insertar amortizaciones mensuales
-                for (int i = 0; i < vidaUtil * 12; i++) {
-                    cal.add(Calendar.MONTH, 1);
-                    psIns.setInt(1, idLicencia);
-                    psIns.setString(2, "mensual");
-                    psIns.setDouble(3, amortMensual);
-                    psIns.setDate(4, new java.sql.Date(cal.getTimeInMillis()));
-                    psIns.setString(5, "pendiente");
-                    psIns.addBatch();
-                }
-
-                // Insertar amortizaciones anuales
-                cal.setTime(fechaCompra);
-                for (int i = 0; i < vidaUtil; i++) {
-                    cal.add(Calendar.YEAR, 1);
-                    psIns.setInt(1, idLicencia);
-                    psIns.setString(2, "anual");
-                    psIns.setDouble(3, amortAnual);
-                    psIns.setDate(4, new java.sql.Date(cal.getTimeInMillis()));
-                    psIns.setString(5, "pendiente");
-                    psIns.addBatch();
-                }
-
-                psIns.executeBatch();
-                return "Amortizaciones generadas con éxito.";
-
-            } else {
-                 return "Licencia con ID " + idLicencia + " no encontrada.";
+            if (rs.getInt(1) > 0) {
+                return "Amortizaciones ya existen para esta licencia.";
             }
 
-        } catch (SQLException e) {
-            System.err.println("Error al generar amortizaciones: " + e.getMessage());
+            try (PreparedStatement psIns = con.prepareStatement(sqlInsert)) {
+                psIns.setInt(1, idLicencia);
+                psIns.executeUpdate();
+            }
+
+            return "Amortizaciones generadas correctamente.";
+
+        } catch (Exception e) {
+            e.printStackTrace();
             return "Error al generar amortizaciones: " + e.getMessage();
-        } finally {
-            ConexionBD.desconectar(conn);
         }
     }
 
-    // Listar amortizaciones según el tipo
-    public List<Amortizacion> listarAmortizaciones(int idLicencia, String tipo) {
+    public List<Amortizacion> listarPorLicencia(int idLicencia, String tipo, String estado) {
+
         List<Amortizacion> lista = new ArrayList<>();
-        String sql = "";
-        
-        switch (tipo.toLowerCase()) {
-            case "mensual":
-                sql = "SELECT * FROM amortizacion WHERE idlicencia = ? AND tipocartera = 'mensual' ORDER BY fecharegistro ASC";
-                break;
-            case "anual":
-                sql = "SELECT * FROM amortizacion WHERE idlicencia = ? AND tipocartera = 'anual' ORDER BY fecharegistro ASC";
-                break;
-            case "acumulado":
-                sql = "SELECT idlicencia, SUM(monto) AS monto_total FROM amortizacion WHERE idlicencia = ? GROUP BY idlicencia";
-                break;
-            case "pendiente":
-                sql = "SELECT * FROM amortizacion WHERE idlicencia = ? AND estado = 'pendiente'";
-                break;
-            case "pagada":
-                sql = "SELECT * FROM amortizacion WHERE idlicencia = ? AND estado = 'pagada'";
-                break;
-            default:
-                // Tipo no válido, retornar lista vacía
-                return lista; 
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM amortizacion WHERE idlicencia = ?");
+
+        if (!"acumulado".equalsIgnoreCase(tipo)) {
+            sql.append(" AND tipocartera = ?");
         }
 
-        Connection conn = ConexionBD.conectar();
-        if (conn == null) return lista;
+        if (!"todos".equalsIgnoreCase(estado)) {
+            sql.append(" AND estado = ?");
+        }
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idLicencia);
-            ResultSet rs = stmt.executeQuery();
+        try (Connection con = conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            int i = 1;
+            ps.setInt(i++, idLicencia);
+
+            if (!"acumulado".equalsIgnoreCase(tipo)) {
+                ps.setString(i++, tipo);
+            }
+
+            if (!"todos".equalsIgnoreCase(estado)) {
+                ps.setString(i++, estado);
+            }
+
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
+
                 Amortizacion a = new Amortizacion();
-                if (tipo.equalsIgnoreCase("acumulado")) {
-                    a.setIdLicencia(rs.getInt("idlicencia"));
-                    a.setMonto(rs.getDouble("monto_total"));
-                    a.setTipoCartera("Acumulado");
-                } else {
-                    a.setIdAmortizacion(rs.getInt("idamortizacion"));
-                    a.setIdLicencia(rs.getInt("idlicencia"));
-                    a.setTipoCartera(rs.getString("tipocartera"));
-                    a.setMonto(rs.getDouble("monto"));
-                    a.setFechaRegistro(rs.getDate("fecharegistro"));
-                    a.setEstado(rs.getString("estado"));
-                }
+
+                a.setIdAmortizacion(rs.getInt("idamortizacion"));
+                a.setTipoCartera(rs.getString("tipocartera"));
+                a.setMonto(rs.getDouble("monto"));
+                a.setFechaRegistro(rs.getDate("fecharegistro"));
+                a.setIdCuota(rs.getInt("idcuota"));
+                a.setIdLicencia(rs.getInt("idlicencia"));
+                a.setEstado(rs.getString("estado"));
+
                 lista.add(a);
             }
 
-        } catch (SQLException e) {
-            System.err.println("Error al listar amortizaciones: " + e.getMessage());
-        } finally {
-            ConexionBD.desconectar(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return lista;
     }
 
-    // Cambiar estado (pendiente/pagada)
-    public boolean actualizarEstado(int idAmortizacion, String nuevoEstado) {
-        String sql = "UPDATE amortizacion SET estado = ? WHERE idamortizacion = ?";
-        Connection conn = ConexionBD.conectar();
-        if (conn == null) return false;
-        
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, nuevoEstado);
-            ps.setInt(2, idAmortizacion);
-            int filasAfectadas = ps.executeUpdate();
-            return filasAfectadas > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al actualizar estado: " + e.getMessage());
-            return false;
-        } finally {
-            ConexionBD.desconectar(conn);
-        }
-    }
-
+    // -----------------------------
+    // NUEVOS MÉTODOS PARA ValorLibrosDAO
+    // -----------------------------
+    /**
+     * Verifica si existe la licencia en la tabla licencia
+     */
     public boolean licenciaExiste(int idLicencia) {
-        String sql = "SELECT 1 FROM licencia WHERE idlicencia = ?";
-        Connection conn = ConexionBD.conectar();
-        if (conn == null) return false;
+        boolean existe = false;
+        String sql = "SELECT 1 FROM licencia WHERE id_licencia = ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection con = conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idLicencia);
             ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            System.err.println("Error en licenciaExiste: " + e.getMessage());
-            return false;
-        } finally {
-            ConexionBD.desconectar(conn);
+            if (rs.next()) {
+                existe = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return existe;
+    }
+
+    /**
+     * Obtiene la suma de amortizaciones acumuladas para una licencia
+     */
+    public double obtenerAmortizacionesAcumuladas(int idLicencia) {
+        double acumulado = 0.0;
+        String sql = "SELECT COALESCE(SUM(monto), 0.0) AS monto_total FROM amortizacion WHERE idlicencia = ?";
+
+        try (Connection con = conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idLicencia);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                acumulado = rs.getDouble("monto_total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return acumulado;
     }
 }

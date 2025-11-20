@@ -18,7 +18,7 @@ public class Licencia {
     private Date fechaCompra;
     private Date fechaFin;
     private int vidaUtil;
-    private int valorEnLibros;
+    private double valorEnLibros;
     private double valorPendiente;
     private int idUsuario;
 
@@ -88,7 +88,7 @@ public class Licencia {
         this.vidaUtil = vidaUtil;
     }
 
-    public int getValorEnLibros() {
+    public double getValorEnLibros() {
         return valorEnLibros;
     }
 

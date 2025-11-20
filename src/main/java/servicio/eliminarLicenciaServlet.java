@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import modelo.Licencia;
+
 /**
  *
  * @author serbi
@@ -22,31 +23,25 @@ import modelo.Licencia;
 @WebServlet(name = "eliminarLicenciaServlet", urlPatterns = {"/eliminarLicenciaServlet"})
 public class eliminarLicenciaServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-          Connection conn = null;
+
+        ConexionBD conexionBD = new ConexionBD(); // <-- Crear objeto de conexión
+        Connection conn = null;
+
         try {
-            conn = ConexionBD.conectar();
+            conn = conexionBD.conectar();
             LicenciaDAO dao = new LicenciaDAO(conn);
 
             // Si viene un id de licencia a eliminar
             String idParam = request.getParameter("idlicencia");
             if (idParam != null && !idParam.isEmpty()) {
                 int idLicencia = Integer.parseInt(idParam);
-                dao.eliminarLicencia(idLicencia);
+                dao.eliminar(idLicencia); // <-- Aquí el método correcto es eliminar()
             }
 
             // Cargar la lista actualizada de licencias
-            List<Licencia> lista = dao.listarLicenciasPorUsuario(1); // o listarLicenciasPorUsuario(idUsuario)
+            List<Licencia> lista = dao.listarLicenciasPorUsuario(1); // o usar idUsuario dinámico
             request.setAttribute("listaLicencias", lista);
             request.getRequestDispatcher("eliminarLicencia.jsp").forward(request, response);
 
@@ -54,8 +49,12 @@ public class eliminarLicenciaServlet extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("mensaje", "Error al consultar la base de datos: " + e.getMessage());
             request.getRequestDispatcher("eliminarLicencia.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("mensaje", "Error inesperado: " + e.getMessage());
+            request.getRequestDispatcher("eliminarLicencia.jsp").forward(request, response);
         } finally {
-            ConexionBD.desconectar(conn);
+            conexionBD.desconectar(conn); // <-- Usar el objeto para desconectar
         }
     }
 
