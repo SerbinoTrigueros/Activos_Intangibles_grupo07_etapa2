@@ -11,7 +11,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Gestión y Administración en Licencias de Software</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/menuLicencia.css">
+     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/menuLicencia.css?v=<%= System.currentTimeMillis() %>">
+
+
     </head>
     <body>
 

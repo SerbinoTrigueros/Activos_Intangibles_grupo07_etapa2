@@ -5,7 +5,8 @@
 <html>
     <head>
         <title>Eliminar Licencias</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/eliminarLicencia.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/eliminarLicencia.css?v=<%= System.currentTimeMillis() %>">
+
     </head>
     <body>
 

@@ -21,7 +21,6 @@ public class AmortizacionDAO {
     public String generarAmortizaciones(int idLicencia) {
 
         String sqlVerificar = "SELECT COUNT(*) FROM amortizacion WHERE idlicencia = ?";
-        String sqlInsert = "INSERT INTO amortizacion (idlicencia, tipocartera, monto, fecharegistro, estado) VALUES (?, 'mensual', 50.00, CURRENT_DATE, 'pendiente')";
 
         try (Connection con = conexion.conectar(); PreparedStatement psVer = con.prepareStatement(sqlVerificar)) {
 
@@ -33,12 +32,40 @@ public class AmortizacionDAO {
                 return "Amortizaciones ya existen para esta licencia.";
             }
 
-            try (PreparedStatement psIns = con.prepareStatement(sqlInsert)) {
-                psIns.setInt(1, idLicencia);
-                psIns.executeUpdate();
+            // -----------------------------
+            // Generar automáticamente cuotas y amortizaciones
+            // -----------------------------
+            // Ejemplo: generar 12 cuotas mensuales de 50.00
+            int numeroCuotas = 12;
+            double monto = 50.00;
+
+            for (int i = 1; i <= numeroCuotas; i++) {
+                // Insertar cuota
+                String sqlInsertCuota = "INSERT INTO cuota (numerocuota, monto, estado, idlicencia, tipo, fecharegistro) "
+                        + "VALUES (?, ?, 'pendiente', ?, 'mensual', CURRENT_DATE) RETURNING idcuota";
+                int idCuota = 0;
+                try (PreparedStatement psCuota = con.prepareStatement(sqlInsertCuota)) {
+                    psCuota.setInt(1, i);
+                    psCuota.setDouble(2, monto);
+                    psCuota.setInt(3, idLicencia);
+                    ResultSet rsCuota = psCuota.executeQuery();
+                    if (rsCuota.next()) {
+                        idCuota = rsCuota.getInt("idcuota");
+                    }
+                }
+
+                // Insertar amortización con el idCuota generado
+                String sqlInsertAmort = "INSERT INTO amortizacion (idlicencia, tipocartera, monto, fecharegistro, estado, idcuota) "
+                        + "VALUES (?, 'mensual', ?, CURRENT_DATE, 'pendiente', ?)";
+                try (PreparedStatement psAmort = con.prepareStatement(sqlInsertAmort)) {
+                    psAmort.setInt(1, idLicencia);
+                    psAmort.setDouble(2, monto);
+                    psAmort.setInt(3, idCuota);
+                    psAmort.executeUpdate();
+                }
             }
 
-            return "Amortizaciones generadas correctamente.";
+            return "Amortizaciones y cuotas generadas automáticamente.";
 
         } catch (Exception e) {
             e.printStackTrace();

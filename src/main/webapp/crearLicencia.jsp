@@ -1,8 +1,3 @@
-<%-- 
-    Document   : crearLicencia
-    Created on : 13 nov 2025, 17:01:53
-    Author     : serbi
---%>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -11,10 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Licencia de Software</title>
 
-<!-- Enlace al CSS externo -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/crearLicencia.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/crearLicencia.css?v=<%= System.currentTimeMillis() %>">
 
-<!-- Estilos Flatpickr -->
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css" />
 
@@ -22,14 +16,15 @@
 <body>
 
   <div class="form-container">
+
     <h2>Licencia de Software</h2>
 
-    <%-- Mostrar mensaje de éxito o error desde el Servlet --%>
     <% if (request.getAttribute("mensaje") != null) { %>
         <div class="mensaje"><%= request.getAttribute("mensaje") %></div>
     <% } %>
 
-    <form action="crearLicenciaServlet" method="post">
+    <form id="formLicencia" action="crearLicenciaServlet" method="post">
+
       <label for="tipo">Tipo de Licencia:</label>
       <select id="tipo" name="tipo">
         <option>Microsoft Office</option>
@@ -54,12 +49,14 @@
 
       <div class="btn-container">
         <button type="submit">Guardar</button>
-        <button type="button" onclick="window.location.href='menuGestion.jsp'">Cancelar</button>
+        <button type="button" onclick="document.getElementById('formLicencia').reset();">Cancelar</button>
+        <button type="button" onclick="window.location.href='menuGestion.jsp'">Atrás</button>
       </div>
+
     </form>
+
   </div>
 
-  <!-- Script Flatpickr para fechas -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
     flatpickr("#fechaCompra", { dateFormat: "Y-m-d", theme: "dark" });

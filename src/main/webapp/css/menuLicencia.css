@@ -1,67 +1,82 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
-*/
-/* 
-    Created on : 13 nov 2025, 17:06:22
-    Author     : serbi
-*/
-
 body {
-  background-color: #0a0a0a;
-  color: #fff;
-  font-family: 'Poppins', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
+    background-color: #0a0a0a;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
 }
 
 h1 {
-  color: #ffff00;
-  text-shadow: 0 0 20px #ffff00;
-  margin-bottom: 60px;
-  text-align: center;
+    color: #00ffff;
+    text-shadow: 0 0 20px #00ffff;
+    margin-bottom: 70px;
+    font-size: 2.6em;
+    text-align: center;
 }
 
 .options {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
 }
 
 .option-card {
-  background: #1a1a00;
-  border: 2px solid #ffff00;
-  box-shadow: 0 0 25px #ffff00;
-  border-radius: 15px;
-  width: 500px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.3s ease;
+    background: #022424;
+    border: 2px solid #00e0e0;
+    box-shadow: 0 0 30px #00e0e0;
+    border-radius: 18px;
+    width: 580px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s ease;
 }
 
 .option-card h2 {
-  color: #ffff00;
-  font-size: 1.4em;
-  text-shadow: 0 0 10px #ffff00;
+    color: #00ffff;
+    font-size: 1.8em;
+    text-shadow: 0 0 12px #00ffff;
 }
 
 .option-card:hover {
-  background-color: #ffff00;
-  color: #1a1a00;
-  box-shadow: 0 0 40px #ffff00;
-  transform: scale(1.05);
+    background-color: #00ffff;
+    color: #0a0a0a;
+    box-shadow: 0 0 45px #00ffff;
+    transform: scale(1.06);
 }
 
 .option-card:hover h2 {
-  color: #1a1a00;
-  text-shadow: none;
+    color: #0a0a0a;
+    text-shadow: none;
+}
+
+.button-container {
+    margin-top: 70px;
+}
+
+button {
+    background-color: #022424;
+    border: 2px solid #00e0e0;
+    color: #00ffff;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border-radius: 10px;
+    box-shadow: 0 0 25px #00e0e0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background-color: #00ffff;
+    color: #0a0a0a;
+    box-shadow: 0 0 40px #00ffff;
 }

@@ -1,0 +1,110 @@
+body {
+    background-color: #0a0a0a;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.contenedor-login {
+    background-color: #022424;
+    border: 2px solid #00e0e0;
+    box-shadow: 0 0 40px #00e0e0;
+    border-radius: 18px;
+    padding: 50px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 420px;
+}
+
+.titulo {
+    color: #00ffff;
+    text-shadow: 0 0 20px #00ffff;
+    margin-bottom: 40px;
+    font-size: 2em;
+    text-align: center;
+}
+
+.error {
+    background-color: #330000;
+    color: #ff4444;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+}
+
+.grupo {
+    position: relative;
+    margin-bottom: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.grupo input {
+    background-color: #0a0a0a;
+    color: #00ffff;
+    border: 2px solid #00e0e0;
+    border-radius: 8px;
+    padding: 16px 12px 6px 12px; /* espacio para label flotante */
+    font-size: 1em;
+    width: 100%;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+.grupo input::placeholder {
+    color: transparent; /* placeholder invisible */
+}
+
+.grupo input:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 10px #00ffff;
+}
+
+.grupo label {
+    color: #00ffff;
+    font-size: 1em;
+    position: absolute;
+    left: 12px;
+    top: 16px;
+    pointer-events: none;
+    transition: 0.3s ease all;
+    background-color: #022424;
+    padding: 0 5px;
+}
+
+.grupo input:focus + label,
+.grupo input:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 8px;
+    font-size: 0.8em;
+    color: #00ffff;
+}
+
+.boton {
+    background-color: #022424;
+    border: 2px solid #00e0e0;
+    color: #00ffff;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border-radius: 10px;
+    box-shadow: 0 0 25px #00e0e0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+    margin-top: 10px;
+}
+
+.boton:hover {
+    background-color: #00ffff;
+    color: #0a0a0a;
+    box-shadow: 0 0 40px #00ffff;
+}

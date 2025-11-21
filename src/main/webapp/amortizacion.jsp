@@ -1,5 +1,3 @@
-
-
 <%@page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -8,6 +6,9 @@
     <head>
         <meta charset="UTF-8">
         <title>Amortización de Licencias</title>
+
+        <!-- Enlace al CSS -->
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/amortizacion.css?v=<%= System.currentTimeMillis()%>">
     </head>
     <body>
 
@@ -39,7 +40,7 @@
 
         <h3>${msgGenerar}</h3>
 
-        <table border="1">
+        <table>
             <tr>
                 <th>ID Amortización</th>
                 <th>ID Licencia</th>
