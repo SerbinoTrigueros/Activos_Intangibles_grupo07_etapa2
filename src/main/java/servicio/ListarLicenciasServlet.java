@@ -4,7 +4,6 @@
  */
 package servicio;
 
-
 import controlador.LicenciaDAO;
 import java.io.IOException;
 import java.sql.Connection;

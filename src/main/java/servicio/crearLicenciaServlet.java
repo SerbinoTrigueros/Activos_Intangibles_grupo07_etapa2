@@ -24,6 +24,7 @@ import modelo.Usuario;
  *
  * @author serbi
  */
+
 @WebServlet(name = "crearLicenciaServlet", urlPatterns = {"/crearLicenciaServlet"})
 
 public class crearLicenciaServlet extends HttpServlet {

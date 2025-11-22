@@ -20,7 +20,7 @@ public class ReporteDAO {
         this.conexion = conexion;
     }
 
-    // Agregar un reporte
+    // agregamos un reporte
     public boolean agregarReporte(Reporte r) throws SQLException {
         String sql = "INSERT INTO reporte (descripcion, fechagenerada, tipo, idlicencia) VALUES (?, ?, ?, ?)";
         PreparedStatement ps = conexion.prepareStatement(sql);
@@ -31,7 +31,7 @@ public class ReporteDAO {
         return ps.executeUpdate() > 0;
     }
 
-    // Listar todos los reportes
+    // listamos todos los reportes
     public List<Reporte> listarReportes() throws SQLException {
         List<Reporte> lista = new ArrayList<>();
         String sql = "SELECT * FROM reporte";
@@ -49,7 +49,7 @@ public class ReporteDAO {
         return lista;
     }
 
-    // Buscar un reporte por id
+    // buscamos un reporte por el id
     public Reporte buscarPorId(int id) throws SQLException {
         String sql = "SELECT * FROM reporte WHERE idreporte=?";
         PreparedStatement ps = conexion.prepareStatement(sql);

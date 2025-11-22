@@ -1,3 +1,12 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 13 nov 2025, 17:05:19
+    Author     : serbi
+*/ 
+
 body {
     background-color: #0a0a0a;
     color: #fff;
@@ -53,7 +62,7 @@ body {
     color: #00ffff;
     border: 2px solid #00e0e0;
     border-radius: 8px;
-    padding: 16px 12px 6px 12px; /* espacio para label flotante */
+    padding: 16px 12px 6px 12px; 
     font-size: 1em;
     width: 100%;
     outline: none;
@@ -61,7 +70,7 @@ body {
 }
 
 .grupo input::placeholder {
-    color: transparent; /* placeholder invisible */
+    color: transparent; 
 }
 
 .grupo input:focus {

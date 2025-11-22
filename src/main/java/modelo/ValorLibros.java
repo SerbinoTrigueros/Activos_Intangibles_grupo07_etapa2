@@ -15,10 +15,10 @@ public class ValorLibros {
     private double valorEnLibros;
     
 
-    // Constructor vacío
+    // cktor vacio
     public ValorLibros() {}
 
-    // Getters y Setters
+    // getters y setters
     public int getIdLicencia() {
         return idLicencia;
     }

@@ -11,16 +11,18 @@ import java.sql.Date;
  * @author serbi
  */
 public class Reporte {
-   private int idReporte;
+
+    private int idReporte;
     private String descripcion;
     private Date fechaGenerada;
     private String tipo;
     private int idLicencia;
 
-    // Constructor vacío
-    public Reporte() {}
+    // cktor vacio
+    public Reporte() {
+    }
 
-    // Constructor completo
+    // cktor completo
     public Reporte(int idReporte, String descripcion, Date fechaGenerada, String tipo, int idLicencia) {
         this.idReporte = idReporte;
         this.descripcion = descripcion;
@@ -29,8 +31,7 @@ public class Reporte {
         this.idLicencia = idLicencia;
     }
 
-    // Getters y Setters
-
+    // getters y setters
     public int getIdReporte() {
         return idReporte;
     }
@@ -70,6 +71,4 @@ public class Reporte {
     public void setIdLicencia(int idLicencia) {
         this.idLicencia = idLicencia;
     }
-  
-    
 }

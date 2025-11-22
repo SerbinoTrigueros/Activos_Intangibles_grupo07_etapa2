@@ -22,9 +22,7 @@ public class ValorLibrosDAO {
         double costo = 0.0;
         double acumulado = 0.0;
         
-        // [CÓDIGO para obtener costo y acumulado se mantiene igual]...
-        
-        // Obtener Costo de Adquisición
+        // obtenemos el costo de la adquisición
         String sqlCosto = "SELECT costo FROM licencia WHERE idlicencia = ?";
         try (PreparedStatement psCosto = conn.prepareStatement(sqlCosto)) {
             psCosto.setInt(1, idLicencia);
@@ -38,7 +36,7 @@ public class ValorLibrosDAO {
             return null;
         }
 
-        // Obtener Amortizaciones Acumuladas
+        // obtenemos las amortizaciones Acumuladas
         String sqlAcumulado = "SELECT COALESCE(SUM(monto), 0.0) AS monto_total FROM amortizacion WHERE idlicencia = ?";
         try (PreparedStatement psAcumulado = conn.prepareStatement(sqlAcumulado)) {
             psAcumulado.setInt(1, idLicencia);
@@ -54,14 +52,14 @@ public class ValorLibrosDAO {
             ConexionBD.desconectar(conn);
         }
         
-        // 4. Calcular el Valor en Libros y manejar el excedente.
+        // calcular el valor en libros y manejamos el excedente.
         double valorBruto = costo - acumulado;
        
         
-        // Si valorBruto es negativo, el valor absoluto es el excedente o "carga"
+        // si valorbruto es negativo, el valor absoluto es el excedente o "carga"
         double excedenteCarga = (valorBruto < 0) ? Math.abs(valorBruto) : 0.0;
         
-        // 5. Crear y poblar el objeto de resultado
+        
         ValorLibros vl = new ValorLibros();
         vl.setIdLicencia(idLicencia);
         vl.setCostoAdquisicion(costo);

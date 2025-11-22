@@ -19,35 +19,35 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/ValorLibrosServlet")
 public class ValorLibrosServlet extends HttpServlet {
-    
+
     private final ValorLibrosDAO dao = new ValorLibrosDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Mostrar la pantalla del formulario de consulta
+
         request.getRequestDispatcher("valorLibros.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String idLicenciaStr = request.getParameter("idLicencia");
         String mensaje = null;
         ValorLibros vl = null;
 
         try {
             int idLicencia = Integer.parseInt(idLicenciaStr);
-            
+
             vl = dao.calcularValorLibros(idLicencia);
-            
+
             if (vl == null) {
                 mensaje = "La licencia con ID " + idLicencia + " no existe o hubo un error de BD.";
             } else if (vl.getAmortizacionesAcumuladas() == 0) {
-                 mensaje = "Licencia encontrada. No hay amortizaciones acumuladas registradas aún.";
+                mensaje = "Licencia encontrada. No hay amortizaciones acumuladas registradas aún.";
             } else {
-                 mensaje = "Cálculo de Valor en Libros exitoso.";
+                mensaje = "Cálculo de Valor en Libros exitoso.";
             }
 
         } catch (NumberFormatException e) {
@@ -56,13 +56,11 @@ public class ValorLibrosServlet extends HttpServlet {
             mensaje = "Error inesperado al procesar la solicitud.";
             e.printStackTrace();
         }
-        
-        // Guardar resultados y mensaje en el request
+
         request.setAttribute("resultadoVL", vl);
         request.setAttribute("mensaje", mensaje);
         request.setAttribute("idLicenciaActual", idLicenciaStr);
 
-        // Reenviar a la misma página JSP para mostrar el formulario y los resultados
         request.getRequestDispatcher("valorLibros.jsp").forward(request, response);
     }
 }

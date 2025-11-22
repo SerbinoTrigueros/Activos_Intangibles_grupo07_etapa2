@@ -12,28 +12,23 @@ import java.sql.SQLException;
  *
  * @author serbi
  */
+
 public class ConexionBD {
  private final String url = "jdbc:postgresql://localhost:5432/Activos_Intangibles";
     private final String user = "postgres";
     private final String pass = "255623";
 
-    // -------------------------------
-    // CONECTAR
-    // -------------------------------
     public Connection conectar() throws SQLException {
 
         try {
-            Class.forName("org.postgresql.Driver");  // <---- ESTA ES LA CLAVE
+            Class.forName("org.postgresql.Driver");  
         } catch (ClassNotFoundException e) {
             throw new SQLException("No se encontró el driver de PostgreSQL", e);
         }
 
         return DriverManager.getConnection(url, user, pass);
     }
-
-    // -------------------------------
-    // DESCONECTAR (opcional)
-    // -------------------------------
+    
     public void desconectar(Connection con) {
         if (con != null) {
             try {

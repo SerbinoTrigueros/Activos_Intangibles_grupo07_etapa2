@@ -21,7 +21,7 @@ public class CuotaDAO {
         this.conexion = conexion;
     }
 
-    // Agregar cuota
+    // agregamos cuota
     public boolean agregarCuota(Cuota c) throws SQLException {
         String sql = "INSERT INTO cuota (numerocuota, monto, estado, idlicencia, tipo, fecharegistro) VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = conexion.prepareStatement(sql);
@@ -34,7 +34,7 @@ public class CuotaDAO {
         return ps.executeUpdate() > 0;
     }
 
-    // Listar todas las cuotas
+    // listamos todas las cuotas
     public List<Cuota> listarCuotas() throws SQLException {
         List<Cuota> lista = new ArrayList<>();
         String sql = "SELECT * FROM cuota";
@@ -54,7 +54,7 @@ public class CuotaDAO {
         return lista;
     }
 
-    // Buscar cuota por id
+    // buscamos la cuota por id
     public Cuota buscarPorId(int id) throws SQLException {
         String sql = "SELECT * FROM cuota WHERE idcuota=?";
         PreparedStatement ps = conexion.prepareStatement(sql);

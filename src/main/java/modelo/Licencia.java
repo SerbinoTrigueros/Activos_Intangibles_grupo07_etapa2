@@ -22,10 +22,10 @@ public class Licencia {
     private double valorPendiente;
     private int idUsuario;
 
-    // Constructor vacío
+    // cktor vacio
     public Licencia() {}
 
-    // Constructor completo
+    // cktor completo
     public Licencia(int idLicencia, String tipoLicencia, double costo, Date fechaCompra, Date fechaFin,
                     int vidaUtil, int valorEnLibros, double valorPendiente, int idUsuario) {
         this.idLicencia = idLicencia;

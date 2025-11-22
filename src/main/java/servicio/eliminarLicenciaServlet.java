@@ -26,22 +26,20 @@ public class eliminarLicenciaServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        ConexionBD conexionBD = new ConexionBD(); // <-- Crear objeto de conexión
+        ConexionBD conexionBD = new ConexionBD();
         Connection conn = null;
 
         try {
             conn = conexionBD.conectar();
             LicenciaDAO dao = new LicenciaDAO(conn);
 
-            // Si viene un id de licencia a eliminar
             String idParam = request.getParameter("idlicencia");
             if (idParam != null && !idParam.isEmpty()) {
                 int idLicencia = Integer.parseInt(idParam);
-                dao.eliminar(idLicencia); // <-- Aquí el método correcto es eliminar()
+                dao.eliminar(idLicencia);
             }
 
-            // Cargar la lista actualizada de licencias
-            List<Licencia> lista = dao.listarLicenciasPorUsuario(1); // o usar idUsuario dinámico
+            List<Licencia> lista = dao.listarLicenciasPorUsuario(1);
             request.setAttribute("listaLicencias", lista);
             request.getRequestDispatcher("eliminarLicencia.jsp").forward(request, response);
 
@@ -54,7 +52,7 @@ public class eliminarLicenciaServlet extends HttpServlet {
             request.setAttribute("mensaje", "Error inesperado: " + e.getMessage());
             request.getRequestDispatcher("eliminarLicencia.jsp").forward(request, response);
         } finally {
-            conexionBD.desconectar(conn); // <-- Usar el objeto para desconectar
+            conexionBD.desconectar(conn);
         }
     }
 

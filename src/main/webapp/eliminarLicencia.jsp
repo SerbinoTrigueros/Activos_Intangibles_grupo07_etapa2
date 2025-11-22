@@ -40,7 +40,7 @@
                     <td>${lic.fechaFin}</td>
                     <td>${lic.vidaUtil}</td>
                     <td>
-                        <!-- Enviamos el parámetro EXACTO que el servlet espera: idlicencia -->
+                        
                         <a href="eliminarLicenciaServlet?idlicencia=${lic.idLicencia}"
                            onclick="return confirm('¿Seguro que quieres eliminar esta licencia?');">
                             Eliminar

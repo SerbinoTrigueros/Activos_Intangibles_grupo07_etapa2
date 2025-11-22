@@ -16,10 +16,10 @@ public class Usuario {
     private String contrasena;
     private String region;
 
-    // Constructor vacío
+    // cktor vacio
     public Usuario() {}
 
-    // Constructor completo
+    // cktor completo
     public Usuario(int idUsuario, String nombre, String email, String contrasenia, String region) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
@@ -28,7 +28,7 @@ public class Usuario {
         this.region = region;
     }
 
-    // Getters y Setters
+    // getters y setters
 
     public int getIdUsuario() {
         return idUsuario;

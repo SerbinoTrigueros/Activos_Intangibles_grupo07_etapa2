@@ -4,7 +4,6 @@
  */
 package servicio;
 
-
 import controlador.ContabilidadDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -18,8 +17,8 @@ import modelo.Licencia;
 /**
  *
  * @author serbi
- * */
-
+ *
+ */
 @WebServlet("/ContabilidadServlet")
 public class ContabilidadServlet extends HttpServlet {
 

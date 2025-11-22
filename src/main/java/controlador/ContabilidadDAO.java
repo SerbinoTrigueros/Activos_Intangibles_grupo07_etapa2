@@ -18,6 +18,7 @@ import servicio.ConexionBD;
  *
  * @author serbi
  */
+
 public class ContabilidadDAO {
 
     private final ConexionBD conexion = new ConexionBD();

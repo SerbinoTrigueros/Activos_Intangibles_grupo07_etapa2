@@ -20,10 +20,10 @@ public class Amortizacion {
     private int idLicencia;
     private String estado;
 
-    // Constructor vacío
+    // cktor vacio
     public Amortizacion() {}
 
-    // Constructor completo
+    // cktor completo
     public Amortizacion(int idAmortizacion, String tipoCartera, double monto, Date fechaRegistro, int idCuota, int idLicencia, String estado) {
         this.idAmortizacion = idAmortizacion;
         this.tipoCartera = tipoCartera;
@@ -34,7 +34,7 @@ public class Amortizacion {
         this.estado = estado;
     }
 
-    // Getters y Setters
+    // getters y setters
 
     public int getIdAmortizacion() {
         return idAmortizacion;
@@ -90,9 +90,5 @@ public class Amortizacion {
 
     public void setEstado(String estado) {
         this.estado = estado;
-    }
-
-   
-    
-    
+    }  
 }

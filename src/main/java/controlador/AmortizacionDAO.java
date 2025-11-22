@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.*;
 
 public class AmortizacionDAO {
-    // Verifica si ya existen amortizaciones para una licencia
+    
     public boolean amortizacionesExisten(int idLicencia) {
         String sql = "SELECT 1 FROM amortizacion WHERE idlicencia = ?";
         Connection conn = ConexionBD.conectar();
@@ -27,15 +27,15 @@ public class AmortizacionDAO {
         }
     }
 
-    // Calcula y guarda amortizaciones (mensuales y anuales)
-    public String generarAmortizaciones(int idLicencia) { // Retorna String para mensajes
+    // se calcula y se guarda las amortizaciones (mensuales y anuales)
+    public String generarAmortizaciones(int idLicencia) { 
         if (amortizacionesExisten(idLicencia)) {
             return "Las amortizaciones para esta licencia ya existen.";
         }
 
         String sqlLicencia = "SELECT costo, vidautil, fechacompra FROM licencia WHERE idlicencia = ?";
-        // CORRECCIÓN 1: Incluir 'idcuota' en la sentencia INSERT
-        String sqlInsert = "INSERT INTO amortizacion (idlicencia, tipocartera, monto, fecharegistro, estado, idcuota) VALUES (?, ?, ?, ?, ?, ?)"; // <--- CORRECCIÓN
+      
+        String sqlInsert = "INSERT INTO amortizacion (idlicencia, tipocartera, monto, fecharegistro, estado, idcuota) VALUES (?, ?, ?, ?, ?, ?)"; 
 
         Connection conn = ConexionBD.conectar();
         if (conn == null) return "Error de conexión a la BD.";
@@ -59,7 +59,7 @@ public class AmortizacionDAO {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(fechaCompra);
 
-                // Insertar amortizaciones mensuales
+                // insertarmos las amortizaciones mensuales
                 for (int i = 0; i < vidaUtil * 12; i++) {
                     cal.add(Calendar.MONTH, 1);
                     psIns.setInt(1, idLicencia);
@@ -67,11 +67,11 @@ public class AmortizacionDAO {
                     psIns.setDouble(3, amortMensual);
                     psIns.setDate(4, new java.sql.Date(cal.getTimeInMillis()));
                     psIns.setString(5, "pendiente");
-                    psIns.setInt(6, 0); // <--- CORRECCIÓN 2: Asignar un valor (0) a idcuota
+                    psIns.setInt(6, 0); 
                     psIns.addBatch();
                 }
 
-                // Insertar amortizaciones anuales
+                // insertamos las amortizaciones anuales
                 cal.setTime(fechaCompra);
                 for (int i = 0; i < vidaUtil; i++) {
                     cal.add(Calendar.YEAR, 1);
@@ -80,7 +80,7 @@ public class AmortizacionDAO {
                     psIns.setDouble(3, amortAnual);
                     psIns.setDate(4, new java.sql.Date(cal.getTimeInMillis()));
                     psIns.setString(5, "pendiente");
-                    psIns.setInt(6, 0); // <--- CORRECCIÓN 3: Asignar un valor (0) a idcuota
+                    psIns.setInt(6, 0);
                     psIns.addBatch();
                 }
 
@@ -99,7 +99,7 @@ public class AmortizacionDAO {
         }
     }
 
-    // Listar amortizaciones según el tipo
+    // listamos las amortizaciones según el tipo
     public List<Amortizacion> listarAmortizaciones(int idLicencia, String tipo) {
         List<Amortizacion> lista = new ArrayList<>();
         String sql = "";
@@ -121,7 +121,7 @@ public class AmortizacionDAO {
                 sql = "SELECT * FROM amortizacion WHERE idlicencia = ? AND estado = 'pagada'";
                 break;
             default:
-                // Tipo no válido, retornar lista vacía
+                
                 return lista; 
         }
 
@@ -145,8 +145,7 @@ public class AmortizacionDAO {
                     a.setMonto(rs.getDouble("monto"));
                     a.setFechaRegistro(rs.getDate("fecharegistro"));
                     a.setEstado(rs.getString("estado"));
-                    // CORRECCIÓN 4: Mapear el nuevo campo para mostrarlo.
-                    a.setIdCuota(rs.getInt("idcuota")); // <--- CORRECCIÓN
+                    a.setIdCuota(rs.getInt("idcuota")); 
                 }
                 lista.add(a);
             }
@@ -160,7 +159,7 @@ public class AmortizacionDAO {
         return lista;
     }
 
-    // Cambiar estado (pendiente/pagada)
+    // cambiamos el estado a (pendiente/pagada)
     public boolean actualizarEstado(int idAmortizacion, String nuevoEstado) {
         String sql = "UPDATE amortizacion SET estado = ? WHERE idamortizacion = ?";
         Connection conn = ConexionBD.conectar();

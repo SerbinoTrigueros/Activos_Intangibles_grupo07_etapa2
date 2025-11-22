@@ -21,9 +21,9 @@ public class ConexionBD {
     public static Connection conectar() {
         Connection conn = null;
         try {
-            // Cargar el driver de PostgreSQL
+            // cargamos el driver de PostgreSQL
             Class.forName("org.postgresql.Driver"); 
-            // Establecer la conexión
+            // establecemos la conexión
             conn = DriverManager.getConnection(URL, USUARIO, CLAVE);
             System.out.println("Conexión exitosa a la BD.");
         } catch (ClassNotFoundException e) {

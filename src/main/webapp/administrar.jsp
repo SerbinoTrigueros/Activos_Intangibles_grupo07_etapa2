@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%
-    // Si listaLicencias viene null o vacía se cargan los datos desde ContabilidadDAO
     if (request.getAttribute("listaLicencias") == null) {
         try {
             controlador.ContabilidadDAO daoTemp = new controlador.ContabilidadDAO();

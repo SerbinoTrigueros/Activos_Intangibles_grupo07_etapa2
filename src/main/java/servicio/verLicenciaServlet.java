@@ -30,21 +30,20 @@ public class verLicenciaServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        ConexionBD conexionBD = new ConexionBD(); // <-- Crear objeto de conexión
+        ConexionBD conexionBD = new ConexionBD();
         Connection conn = null;
 
         try {
-            // Obtener el usuario desde la sesión
+
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("usuario") == null) {
-                response.sendRedirect("login.jsp"); // No hay sesión activa
+                response.sendRedirect("login.jsp");
                 return;
             }
 
             Usuario usuario = (Usuario) session.getAttribute("usuario");
-            int idUsuario = usuario.getIdUsuario(); // ID del usuario logueado
+            int idUsuario = usuario.getIdUsuario();
 
-            // Conectar a la base de datos y obtener licencias del usuario
             conn = conexionBD.conectar();
             LicenciaDAO dao = new LicenciaDAO(conn);
             List<Licencia> lista = dao.listarLicenciasPorUsuario(idUsuario);
@@ -61,7 +60,7 @@ public class verLicenciaServlet extends HttpServlet {
             request.setAttribute("mensaje", "Error inesperado: " + e.getMessage());
             request.getRequestDispatcher("verLicencia.jsp").forward(request, response);
         } finally {
-            conexionBD.desconectar(conn); // <-- Usar el objeto para desconectar
+            conexionBD.desconectar(conn);
         }
     }
 

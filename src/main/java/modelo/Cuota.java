@@ -11,7 +11,8 @@ import java.sql.Date;
  * @author serbi
  */
 public class Cuota {
-     private int idCuota;
+
+    private int idCuota;
     private int numeroCuota;
     private double monto;
     private String estado;
@@ -19,10 +20,11 @@ public class Cuota {
     private String tipo;
     private Date fechaRegistro;
 
-    // Constructor vacío
-    public Cuota() {}
+    // cktor vacio
+    public Cuota() {
+    }
 
-    // Constructor completo
+    // cktor completo
     public Cuota(int idCuota, int numeroCuota, double monto, String estado, int idLicencia, String tipo, Date fechaRegistro) {
         this.idCuota = idCuota;
         this.numeroCuota = numeroCuota;
@@ -89,8 +91,4 @@ public class Cuota {
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
-    
-    
-    
-    }
-
+}

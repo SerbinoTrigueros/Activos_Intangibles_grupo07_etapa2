@@ -1,3 +1,12 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 13 nov 2025, 17:05:19
+    Author     : serbi
+*/
+
 body {
   background-color: #000;
   color: #00eaff;
@@ -41,7 +50,7 @@ tr:hover {
   cursor: pointer;
 }
 
-/* Botón ATRÁS */
+
 button {
   background-color: #000;
   border: 2px solid #00eaff;
@@ -66,7 +75,7 @@ button:hover {
   justify-content: flex-start;
 }
 
-/* ENLACE ELIMINAR */
+
 a {
   color: #00eaff;
   font-weight: bold;
