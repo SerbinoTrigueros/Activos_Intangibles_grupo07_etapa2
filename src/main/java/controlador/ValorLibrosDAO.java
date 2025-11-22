@@ -3,81 +3,72 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package controlador;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import modelo.ValorLibros;
-import servicio.ConexionBD;
+import java.sql.*;
 
-/**
- *
- * @author serbi
- */
+
 public class ValorLibrosDAO {
 
     private final AmortizacionDAO amortizacionDAO = new AmortizacionDAO();
 
-    /**
-     * Calcula el valor en libros de una licencia.
-     *
-     * @param idLicencia ID de la licencia
-     * @return ValorLibros con costo, amortizaciones y valor en libros, o null
-     * si no existe
-     */
     public ValorLibros calcularValorLibros(int idLicencia) {
-
-        // 1. Verificar si la licencia existe
         if (!amortizacionDAO.licenciaExiste(idLicencia)) {
             return null;
         }
-
-        ConexionBD conexionBD = new ConexionBD();
-        Connection conn = null;
-
+        
+        Connection conn = ConexionBD.conectar();
+        if (conn == null) return null;
+        
         double costo = 0.0;
         double acumulado = 0.0;
-
-        try {
-            conn = conexionBD.conectar();
-            if (conn == null) {
-                return null;
+        
+        // [CÓDIGO para obtener costo y acumulado se mantiene igual]...
+        
+        // Obtener Costo de Adquisición
+        String sqlCosto = "SELECT costo FROM licencia WHERE idlicencia = ?";
+        try (PreparedStatement psCosto = conn.prepareStatement(sqlCosto)) {
+            psCosto.setInt(1, idLicencia);
+            ResultSet rs = psCosto.executeQuery();
+            if (rs.next()) {
+                costo = rs.getDouble("costo");
             }
-
-            // 2. Obtener Costo de Adquisición desde tabla licencia
-            String sqlCosto = "SELECT costo FROM licencia WHERE id_licencia = ?";
-            try (PreparedStatement psCosto = conn.prepareStatement(sqlCosto)) {
-                psCosto.setInt(1, idLicencia);
-                ResultSet rs = psCosto.executeQuery();
-                if (rs.next()) {
-                    costo = rs.getDouble("costo");
-                }
-            }
-
-            // 3. Obtener Amortizaciones Acumuladas usando AmortizacionDAO
-            acumulado = amortizacionDAO.obtenerAmortizacionesAcumuladas(idLicencia);
-
         } catch (SQLException e) {
-            System.err.println("Error al calcular valor de libros: " + e.getMessage());
+            System.err.println("Error al obtener el costo de la licencia: " + e.getMessage());
+            ConexionBD.desconectar(conn);
             return null;
-        } finally {
-            conexionBD.desconectar(conn);
         }
 
-        // 4. Calcular Valor en Libros
+        // Obtener Amortizaciones Acumuladas
+        String sqlAcumulado = "SELECT COALESCE(SUM(monto), 0.0) AS monto_total FROM amortizacion WHERE idlicencia = ?";
+        try (PreparedStatement psAcumulado = conn.prepareStatement(sqlAcumulado)) {
+            psAcumulado.setInt(1, idLicencia);
+            ResultSet rs = psAcumulado.executeQuery();
+            if (rs.next()) {
+                acumulado = rs.getDouble("monto_total"); 
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener amortizaciones acumuladas: " + e.getMessage());
+            ConexionBD.desconectar(conn);
+            return null;
+        } finally {
+            ConexionBD.desconectar(conn);
+        }
+        
+        // 4. Calcular el Valor en Libros y manejar el excedente.
         double valorBruto = costo - acumulado;
+       
+        
+        // Si valorBruto es negativo, el valor absoluto es el excedente o "carga"
         double excedenteCarga = (valorBruto < 0) ? Math.abs(valorBruto) : 0.0;
-
-        // 5. Crear objeto ValorLibros y poblar datos
+        
+        // 5. Crear y poblar el objeto de resultado
         ValorLibros vl = new ValorLibros();
         vl.setIdLicencia(idLicencia);
         vl.setCostoAdquisicion(costo);
         vl.setAmortizacionesAcumuladas(acumulado);
         vl.setValorEnLibros(valorBruto);
-      //  vl.setExcedenteCarga(excedenteCarga); // Opcional si tu clase tiene este campo
-
+        
+        
         return vl;
-    
-}
+    }
 }
