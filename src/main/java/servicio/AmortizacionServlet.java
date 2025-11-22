@@ -17,6 +17,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/AmortizacionServlet")
 public class AmortizacionServlet extends HttpServlet {
@@ -35,7 +36,7 @@ public class AmortizacionServlet extends HttpServlet {
         
         String accion = request.getParameter("accion");
         if (accion == null) {
-            accion = "mostrar"; // Acción por defecto
+            accion = "mostrar";
         }
 
         switch (accion) {
@@ -54,11 +55,27 @@ public class AmortizacionServlet extends HttpServlet {
     private void mostrarAmortizaciones(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        // 1. VARIABLES INICIALES
         String idLicenciaStr = request.getParameter("idLicencia");
-        String tipo = request.getParameter("cbTipo");
-        String estado = request.getParameter("cbEstado");
+        // Inicializamos con valores, pero como luego pueden cambiar, Java se queja en la lambda
+        String tipo = request.getParameter("cbTipo") != null ? request.getParameter("cbTipo") : "mensual";
+        String estado = request.getParameter("cbEstado") != null ? request.getParameter("cbEstado") : "todos";
         
-        // Valores por defecto
+        HttpSession session = request.getSession();
+
+        // 2. LÓGICA DE SESIÓN (Aquí modificamos las variables, por eso dejan de ser "final")
+        if (idLicenciaStr == null || idLicenciaStr.isEmpty()) {
+            idLicenciaStr = (String) session.getAttribute("licenciaActual");
+        }
+        
+        if (request.getParameter("cbTipo") == null && idLicenciaStr != null && !idLicenciaStr.isEmpty()) {
+            tipo = (String) session.getAttribute("tipoActual") != null ? (String) session.getAttribute("tipoActual") : tipo;
+        }
+        
+        if (request.getParameter("cbEstado") == null && idLicenciaStr != null && !idLicenciaStr.isEmpty()) {
+            estado = (String) session.getAttribute("estadoActual") != null ? (String) session.getAttribute("estadoActual") : estado;
+        }
+        
         int idLicencia = 0;
         List<Amortizacion> listaAmortizaciones = null;
         String mensaje = null;
@@ -67,42 +84,52 @@ public class AmortizacionServlet extends HttpServlet {
             if (idLicenciaStr != null && !idLicenciaStr.isEmpty()) {
                 idLicencia = Integer.parseInt(idLicenciaStr);
                 
+                session.setAttribute("licenciaActual", idLicenciaStr);
+                session.setAttribute("tipoActual", tipo);
+                session.setAttribute("estadoActual", estado);
+                
                 if (!dao.licenciaExiste(idLicencia)) {
                     mensaje = "La licencia con ID " + idLicencia + " no existe.";
+                    session.removeAttribute("licenciaActual");
                 } else {
-                    // 1. Generar amortizaciones si no existen (Lógica de negocio)
                     String generacionMensaje = dao.generarAmortizaciones(idLicencia);
                     if (!generacionMensaje.startsWith("Las amortizaciones")) {
-                         // Solo si se generaron por primera vez (o hubo error grave)
-                         mensaje = generacionMensaje; 
+                          mensaje = generacionMensaje; 
                     }
                     
-                    // 2. Listar y filtrar
                     listaAmortizaciones = dao.listarAmortizaciones(idLicencia, tipo);
                     
-                    // Filtrado adicional por estado, necesario porque el DAO de listar no filtra
-                    // totalmente por estado y tipo al mismo tiempo
+                    // --- CORRECCIÓN AQUÍ ---
+                    // Creamos una variable final auxiliar para usarla dentro de la lambda
+                    final String estadoFinal = estado; 
+                    
                     if (!estado.equals("todos") && !tipo.equals("acumulado")) {
-                        listaAmortizaciones.removeIf(a -> !a.getEstado().equalsIgnoreCase(estado));
+                        // Usamos estadoFinal en lugar de estado
+                        listaAmortizaciones.removeIf(a -> !a.getEstado().equalsIgnoreCase(estadoFinal));
                     }
+                    // -----------------------
                     
                     if (listaAmortizaciones.isEmpty() && mensaje == null) {
                         mensaje = "No hay amortizaciones registradas con esos filtros.";
                     }
                 }
+            } else {
+                session.removeAttribute("licenciaActual");
+                session.removeAttribute("tipoActual");
+                session.removeAttribute("estadoActual");
             }
 
         } catch (NumberFormatException e) {
             mensaje = "Ingrese un ID de licencia válido.";
+            session.removeAttribute("licenciaActual");
         }
         
-        // Poner datos en el request para que el JSP los muestre
         request.setAttribute("listaAmortizaciones", listaAmortizaciones);
         request.setAttribute("mensaje", mensaje);
         request.setAttribute("idLicenciaActual", idLicenciaStr);
-        request.setAttribute("tipoActual", tipo != null ? tipo : "mensual");
-        request.setAttribute("estadoActual", estado != null ? estado : "todos");
-                                    //nombre del jsp
+        request.setAttribute("tipoActual", tipo);
+        request.setAttribute("estadoActual", estado);
+        
         request.getRequestDispatcher("amortizaciones.jsp").forward(request, response);
     }
     
@@ -110,10 +137,6 @@ public class AmortizacionServlet extends HttpServlet {
             throws ServletException, IOException {
         
         String idAmortizacionStr = request.getParameter("idAmortizacion");
-        String idLicenciaRetorno = request.getParameter("idLicenciaRetorno");
-        String tipoRetorno = request.getParameter("tipoRetorno");
-        String estadoRetorno = request.getParameter("estadoRetorno");
-
         String mensaje = null;
         try {
             int idAmortizacion = Integer.parseInt(idAmortizacionStr);
@@ -128,11 +151,7 @@ public class AmortizacionServlet extends HttpServlet {
             mensaje = "ID de amortización no válido.";
         }
         
-        // Redirigir de nuevo a la vista de la licencia, manteniendo los filtros
         request.setAttribute("mensaje", mensaje);
-        request.setAttribute("idLicencia", idLicenciaRetorno);
-        request.setAttribute("cbTipo", tipoRetorno);
-        request.setAttribute("cbEstado", estadoRetorno);
         mostrarAmortizaciones(request, response);
     }
 }
