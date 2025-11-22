@@ -25,6 +25,7 @@ import modelo.Usuario;
  * @author serbi
  */
 @WebServlet(name = "crearLicenciaServlet", urlPatterns = {"/crearLicenciaServlet"})
+
 public class crearLicenciaServlet extends HttpServlet {
 
     private final ConexionBD conexionBD = new ConexionBD();
@@ -38,29 +39,88 @@ public class crearLicenciaServlet extends HttpServlet {
         String fechaFinStr = request.getParameter("fechaFin");
         String vidaUtilStr = request.getParameter("vidaUtil");
 
+        request.setAttribute("tipoValor", tipo);
+        request.setAttribute("costoValor", costoStr);
+        request.setAttribute("fechaCompraValor", fechaCompraStr);
+        request.setAttribute("fechaFinValor", fechaFinStr);
+        request.setAttribute("vidaUtilValor", vidaUtilStr);
+
         Connection conn = null;
 
         try {
             conn = conexionBD.conectar();
             LicenciaDAO dao = new LicenciaDAO(conn);
 
-            HttpSession session = request.getSession();
-            Usuario usuarioLogueado = (Usuario) session.getAttribute("usuario");
+            if (tipo == null || tipo.trim().isEmpty()
+                    || costoStr == null || costoStr.trim().isEmpty()
+                    || fechaCompraStr == null || fechaCompraStr.trim().isEmpty()
+                    || fechaFinStr == null || fechaFinStr.trim().isEmpty()
+                    || vidaUtilStr == null || vidaUtilStr.trim().isEmpty()) {
 
-            if (usuarioLogueado == null) {
-                request.setAttribute("mensaje", "No hay usuario logueado.");
+                request.setAttribute("mensaje", "Todos los campos son obligatorios.");
                 request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
                 return;
             }
 
-            int idUsuario = usuarioLogueado.getIdUsuario();
+            double costo;
+            try {
+                costoStr = costoStr.replace(",", ".");
+                costo = Double.parseDouble(costoStr);
+                if (costo <= 0) {
+                    request.setAttribute("mensaje", "El costo debe ser mayor a 0.");
+                    request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("mensaje", "El costo debe ser un decimal válido.");
+                request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
+                return;
+            }
 
-            double costo = Double.parseDouble(costoStr);
-            int vidaUtil = Integer.parseInt(vidaUtilStr);
+            int vidaUtil;
+            try {
+                vidaUtil = Integer.parseInt(vidaUtilStr);
+                if (vidaUtil <= 0) {
+                    request.setAttribute("mensaje", "La vida útil debe ser mayor a 0.");
+                    request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("mensaje", "La vida útil debe ser un número entero.");
+                request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
+                return;
+            }
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date fechaCompraUtil = sdf.parse(fechaCompraStr);
-            java.util.Date fechaFinUtil = sdf.parse(fechaFinStr);
+            java.util.Date fechaCompraUtil;
+            java.util.Date fechaFinUtil;
+
+            try {
+                fechaCompraUtil = sdf.parse(fechaCompraStr);
+                fechaFinUtil = sdf.parse(fechaFinStr);
+            } catch (Exception ex) {
+                request.setAttribute("mensaje", "Formato de fecha incorrecto.");
+                request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
+                return;
+            }
+
+            if (fechaFinUtil.before(fechaCompraUtil)) {
+                request.setAttribute("mensaje", "La fecha fin debe ser mayor que la fecha de compra.");
+                request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
+                return;
+            }
+
+            long diffMilis = fechaFinUtil.getTime() - fechaCompraUtil.getTime();
+            double diffAnios = diffMilis / (1000.0 * 60 * 60 * 24 * 365);
+            int aniosCalculados = (int) Math.round(diffAnios);
+
+            if (vidaUtil != aniosCalculados) {
+                request.setAttribute("mensaje", "La vida útil debe ser exactamente " + aniosCalculados + " año(s).");
+                request.getRequestDispatcher("crearLicencia.jsp").forward(request, response);
+                return;
+            }
+
+            int idUsuario = 1;
 
             java.sql.Date fechaCompra = new java.sql.Date(fechaCompraUtil.getTime());
             java.sql.Date fechaFin = new java.sql.Date(fechaFinUtil.getTime());
@@ -72,11 +132,20 @@ public class crearLicenciaServlet extends HttpServlet {
             licencia.setFechaFin(fechaFin);
             licencia.setVidaUtil(vidaUtil);
             licencia.setIdUsuario(idUsuario);
+            licencia.setValorEnLibros(0);
+            licencia.setValorPendiente(0);
 
             boolean exito = dao.insertar(licencia);
 
             if (exito) {
                 request.setAttribute("mensaje", "Licencia guardada correctamente.");
+
+                request.removeAttribute("tipoValor");
+                request.removeAttribute("costoValor");
+                request.removeAttribute("fechaCompraValor");
+                request.removeAttribute("fechaFinValor");
+                request.removeAttribute("vidaUtilValor");
+
             } else {
                 request.setAttribute("mensaje", "Error al guardar la licencia.");
             }
@@ -92,16 +161,6 @@ public class crearLicenciaServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(crearLicenciaServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -111,8 +170,4 @@ public class crearLicenciaServlet extends HttpServlet {
         }
     }
 
-    @Override
-    public String getServletInfo() {
-        return "Servlet para crear Licencia asociada al usuario logueado";
-    }
 }

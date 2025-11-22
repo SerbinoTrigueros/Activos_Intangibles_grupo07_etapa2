@@ -19,7 +19,7 @@
 <html>
     <head>
         <title>Administración de Información Contable</title>
-      
+
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/administrar.css?v=<%= System.currentTimeMillis()%>">
 
     </head>
@@ -36,6 +36,10 @@
             </a>
             <a href="<c:url value='/ValorLibrosServlet'/>">
                 <button>Consultar Valores en Libros</button>
+            </a>
+
+            <a href="menuLicencia.jsp">
+                <button>Regresar</button>
             </a>
         </div>
 

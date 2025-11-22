@@ -20,13 +20,13 @@ public class UsuarioDAO {
     private Connection conexion;
 
     public UsuarioDAO(Connection conexion) {
-        this.conexion = conexion; // <-- Asegúrate de recibir la conexión aquí
+        this.conexion = conexion; 
     }
 
     public Usuario login(String email, String contrasena) throws SQLException {
         Usuario usuario = null;
         String sql = "SELECT * FROM usuario WHERE email = ? AND contrasena = ?";
-        PreparedStatement ps = conexion.prepareStatement(sql); // <-- aquí falla si conexion es null
+        PreparedStatement ps = conexion.prepareStatement(sql); 
         ps.setString(1, email);
         ps.setString(2, contrasena);
         ResultSet rs = ps.executeQuery();
